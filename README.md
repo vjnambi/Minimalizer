@@ -1,7 +1,7 @@
 # Minimalizer
 Run Python on SynthesizedMinimalizer/main.py
 
-The GUI should open
+The GUI should open\n
 Select an input image
 Click on the input image in the GUI to select splotches
 The text field should be populated with your image's filename and the splotch coordinates you selected
