@@ -6,7 +6,7 @@ def click_event(event, x, y, flags, params):
         print('[',x,',',y,'],')
 
 
-img = cv2.imread("image.jpg", cv2.IMREAD_COLOR)
+img = cv2.imread("Satori3.png", cv2.IMREAD_COLOR)
 cv2.imshow("output",img)
 img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
 
