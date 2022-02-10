@@ -7,7 +7,6 @@ from SplotchFiller import fillSplotches
 
 window = tk.Tk()
 window.title('Minimalizer')
-window.iconphoto(False, tk.PhotoImage(file='ArtSatoriChirei.png'))
 for i in range(3):
     window.columnconfigure(i,weight=1)
     window.rowconfigure(i,weight=1)
