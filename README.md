@@ -1,5 +1,5 @@
 # Minimalizer
-Run Python on SynthesizedMinimalizer/main.py
+Run Python on SynthesizedMinimalizer/main.py   OR   Run SynthesizedMinimalizer/dist/Minimalizer.exe
 
 The GUI should open
 
