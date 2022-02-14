@@ -11,10 +11,10 @@ for i in range(3):
     window.columnconfigure(i,weight=1)
     window.rowconfigure(i,weight=1)
 
-canvas_size=308
-canvas_in = tk.Canvas(window, width=canvas_size, height=canvas_size)
+canvas_size=400
+canvas_in = tk.Canvas(window, width=canvas_size, height=canvas_size, bd=0, highlightthickness=0, relief='ridge')
 txt_coord = tk.Text(width=50, height=25)
-canvas_out = tk.Canvas(window, width=canvas_size, height=canvas_size)
+canvas_out = tk.Canvas(window, width=canvas_size, height=canvas_size, bd=0, highlightthickness=0, relief='ridge')
 
 
 def handle_fnin():
@@ -89,7 +89,7 @@ btn_run.grid(row=0,column=1,padx=5,pady=5)
 btn_fnout.grid(row=0, column=2, padx=5, pady=5)
 canvas_in.grid(row=1, column=0, padx=5, pady=5)
 txt_coord.grid(row=1, column=1, padx=5, pady=5)
-canvas_out.grid(row=1,column=2,padx=5,pady=5)
+canvas_out.grid(row=1,column=2, padx=5, pady=5)
 
 
 window.mainloop()
