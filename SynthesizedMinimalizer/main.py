@@ -33,7 +33,7 @@ def handle_fnin():
 def handle_canvasin(event):
     xcoord = event.x
     ycoord=event.y
-    txt_coord.insert(tk.END,"\n"+str(xcoord)+", "+str(ycoord))
+    txt_coord.insert(tk.END,"\n"+str(xcoord)+", "+str(ycoord)+", 0")
 
 def handle_run():
     fname = txt_coord.get("1.0","2.0")
