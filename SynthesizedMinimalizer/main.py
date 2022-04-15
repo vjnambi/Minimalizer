@@ -11,7 +11,7 @@ for i in range(3):
     window.columnconfigure(i,weight=1)
     window.rowconfigure(i,weight=1)
 
-canvas_size=400
+canvas_size=600
 canvas_in = tk.Canvas(window, width=canvas_size, height=canvas_size, bd=0, highlightthickness=0, relief='ridge')
 txt_coord = tk.Text(width=50, height=25)
 canvas_out = tk.Canvas(window, width=canvas_size, height=canvas_size, bd=0, highlightthickness=0, relief='ridge')
@@ -30,10 +30,20 @@ def handle_fnin():
         canvas_in.create_image((0, 0), image=input_image_tk, anchor="nw")
         canvas_in.update()
 
-def handle_canvasin(event):
+def handle_canvasin1(event):
     xcoord = event.x
     ycoord=event.y
     txt_coord.insert(tk.END,"\n"+str(xcoord)+", "+str(ycoord)+", 0")
+
+def handle_canvasin2(event):
+    xcoord = event.x
+    ycoord=event.y
+    txt_coord.insert(tk.END,"\n"+str(xcoord)+", "+str(ycoord)+", 2")
+
+def handle_canvasin3(event):
+    xcoord = event.x
+    ycoord=event.y
+    txt_coord.insert(tk.END,"\n"+str(xcoord)+", "+str(ycoord)+", 1")
 
 def handle_run():
     fname = txt_coord.get("1.0","2.0")
@@ -62,7 +72,9 @@ def handle_fnout():
         export_image = Image.open('./ArtImage.png')
         export_image.save(fn)
 
-canvas_in.bind("<Button-1>",handle_canvasin)
+canvas_in.bind("<Button-1>",handle_canvasin1)
+canvas_in.bind("<Button-2>",handle_canvasin2)
+canvas_in.bind("<Button-3>",handle_canvasin3)
 
 
 btn_fnin = tk.Button(
@@ -86,10 +98,10 @@ btn_run = tk.Button(
 
 btn_fnin.grid(row=0, column=0, padx=5, pady=5)
 btn_run.grid(row=0,column=1,padx=5,pady=5)
-btn_fnout.grid(row=0, column=2, padx=5, pady=5)
+#btn_fnout.grid(row=0, column=2, padx=5, pady=5)
 canvas_in.grid(row=1, column=0, padx=5, pady=5)
 txt_coord.grid(row=1, column=1, padx=5, pady=5)
-canvas_out.grid(row=1,column=2, padx=5, pady=5)
+#canvas_out.grid(row=1,column=2, padx=5, pady=5)
 
 
 window.mainloop()
