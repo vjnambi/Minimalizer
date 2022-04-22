@@ -12,9 +12,13 @@ for i in range(3):
     window.rowconfigure(i,weight=1)
 
 canvas_size=600
+canvas_size2=300
 canvas_in = tk.Canvas(window, width=canvas_size, height=canvas_size, bd=0, highlightthickness=0, relief='ridge')
-txt_coord = tk.Text(width=50, height=25)
-canvas_out = tk.Canvas(window, width=canvas_size, height=canvas_size, bd=0, highlightthickness=0, relief='ridge')
+txt_coord = tk.Text(width=20, height=25)
+outputframe = tk.Frame(window)
+canvas_out = tk.Canvas(outputframe, width=canvas_size2, height=canvas_size2, bd=0, highlightthickness=0, relief='ridge')
+canvas_sug = tk.Canvas(outputframe, width=canvas_size2, height=canvas_size2, bd=0, highlightthickness=0, relief='ridge')
+
 
 
 def handle_fnin():
@@ -58,12 +62,20 @@ def handle_run():
         window.title('Minimalizer (Invalid Input)')
     else:
         window.title('Minimalizer')
+
         output_image = Image.open('./ArtImage.png')
-        output_image = output_image.resize((canvas_size, canvas_size))
+        output_image = output_image.resize((canvas_size2, canvas_size2))
         output_image_tk = ImageTk.PhotoImage(output_image)
         window.output_image_tk = output_image_tk
         canvas_out.create_image((0, 0), image=output_image_tk, anchor="nw")
         canvas_out.update()
+
+        suggestion_image = Image.open('./ArtSuggestion.png')
+        suggestion_image = suggestion_image.resize((canvas_size2, canvas_size2))
+        suggestion_image_tk = ImageTk.PhotoImage(suggestion_image)
+        window.suggestion_image_tk = suggestion_image_tk
+        canvas_sug.create_image((0, 0), image=suggestion_image_tk, anchor="nw")
+        canvas_sug.update()
 
 def handle_fnout():
     fn=""
@@ -72,36 +84,39 @@ def handle_fnout():
         export_image = Image.open('./ArtImage.png')
         export_image.save(fn)
 
+
 canvas_in.bind("<Button-1>",handle_canvasin1)
 canvas_in.bind("<Button-2>",handle_canvasin2)
 canvas_in.bind("<Button-3>",handle_canvasin3)
 
 
 btn_fnin = tk.Button(
-    text="Select input image...",
-    width=42,
+    text="Select input image",
+    width=20,
     height=1,
     command=handle_fnin
 )
 btn_fnout = tk.Button(
     text="Save output image",
-    width=42,
+    width=20,
     height=1,
     command=handle_fnout
 )
 btn_run = tk.Button(
     text="Minimalize",
-    width=42,
+    width=20,
     height=1,
     command=handle_run
 )
 
 btn_fnin.grid(row=0, column=0, padx=5, pady=5)
 btn_run.grid(row=0,column=1,padx=5,pady=5)
-#btn_fnout.grid(row=0, column=2, padx=5, pady=5)
+btn_fnout.grid(row=0, column=2, padx=5, pady=5)
 canvas_in.grid(row=1, column=0, padx=5, pady=5)
 txt_coord.grid(row=1, column=1, padx=5, pady=5)
-#canvas_out.grid(row=1,column=2, padx=5, pady=5)
+outputframe.grid(row=1, column=2,padx=5, pady=5)
+canvas_out.pack()
+canvas_sug.pack()
 
 
 window.mainloop()
