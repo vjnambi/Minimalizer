@@ -5,14 +5,15 @@ import cv2
 import numpy
 import scipy.signal
 
+
 class ChangeRequest:
 
-    def __init__(self, x, y, val, priority, outline):
+    def __init__(self, x, y, original_color, requested_color, priority):
         self.priority = priority
         self.x = x
         self.y = y
-        self.val = val
-        self.outline = outline
+        self.original_color = original_color
+        self.requested_color = requested_color
 
     def __repr__(self):
         return str(self.priority)
@@ -48,6 +49,7 @@ def HLSDist(val1, val2):
     val2z = (val2[1] - 128) / 128
     return math.dist([val1x, val1y, val1z], [val2x, val2y, val2z])
 
+
 def fillSplotches(fname, coords, canvas_size):
     fname = fname.replace('/','\\')
     fname = fname.replace('\n','')
@@ -69,23 +71,20 @@ def fillSplotches(fname, coords, canvas_size):
     CRQ = ChangeRequestQueue(())
 
     for i in range(colors.shape[0]):
-        if colors[i,2] != 2:
-            CRQ.push(ChangeRequest(colors[i,0], colors[i,1], img[colors[i,0],colors[i,1],:], 0, colors[i,2]))
+        if colors[i,2] == 0:
+            color_buffer = img[colors[i,0],colors[i,1],:]
+        CRQ.push(ChangeRequest(colors[i,0], colors[i,1], img[colors[i,0],colors[i,1],:], color_buffer, 0))
     while len(CRQ) != 0:
         target = CRQ.pop()
         if visited[target.x,target.y] == 0:
             if target.priority > 0.2:
                 suggestion[target.x,target.y] = 255
             visited[target.x,target.y] = 1
-            img2[target.x,target.y,:] = target.val
-            if target.outline == 0:
-                proprange = [(-1,0),(0,-1),(0,1),(1,0)]
-            else:
-                proprange = [(-1,0),(0,-1),(0,1),(1,0),(-1,-1),(-1,1),(1,-1),(1,1)]
+            img2[target.x,target.y,:] = target.requested_color
+            proprange = [(-1,0),(0,-1),(0,1),(1,0)]
             for i, j in proprange:
                 if 0 <= target.x + i < visited.shape[0] and 0 <= target.y + j < visited.shape[1] and visited[target.x + i, target.y + j] == 0:
-                    CRQ.push(ChangeRequest(target.x + i, target.y + j, target.val, HLSDist(target.val, img[target.x + i, target.y + j]), target.outline))
-
+                    CRQ.push(ChangeRequest(target.x + i, target.y + j, target.original_color, target.requested_color, HLSDist(target.original_color, img[target.x + i, target.y + j])))
     img = img2
     img = cv2.cvtColor(img, cv2.COLOR_HLS2BGR)
     cv2.imwrite("ArtImage.png",img)
