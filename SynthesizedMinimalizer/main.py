@@ -3,6 +3,7 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 from PIL import Image, ImageTk
 import numpy
 from SplotchFiller import fillSplotches
+from SplotchFinder import findSplotches
 
 
 window = tk.Tk()
@@ -16,6 +17,7 @@ canvas_size2=300
 canvas_in = tk.Canvas(window, width=canvas_size, height=canvas_size, bd=0, highlightthickness=0, relief='ridge')
 txt_coord = tk.Text(width=20, height=25)
 outputframe = tk.Frame(window)
+inputbuttonframe = tk.Frame(window)
 canvas_out = tk.Canvas(outputframe, width=canvas_size2, height=canvas_size2, bd=0, highlightthickness=0, relief='ridge')
 canvas_sug = tk.Canvas(outputframe, width=canvas_size2, height=canvas_size2, bd=0, highlightthickness=0, relief='ridge')
 
@@ -84,6 +86,10 @@ def handle_fnout():
         export_image = Image.open('./ArtImage.png')
         export_image.save(fn)
 
+def handle_auto():
+    fname = txt_coord.get("1.0","2.0")
+    txt_coord.insert(tk.END,findSplotches(fname, canvas_size))
+
 
 canvas_in.bind("<Button-1>",handle_canvasin1)
 canvas_in.bind("<Button-2>",handle_canvasin2)
@@ -91,6 +97,7 @@ canvas_in.bind("<Button-3>",handle_canvasin3)
 
 
 btn_fnin = tk.Button(
+    master=inputbuttonframe,
     text="Select input image",
     width=20,
     height=1,
@@ -108,8 +115,16 @@ btn_run = tk.Button(
     height=1,
     command=handle_run
 )
-
+btn_auto = tk.Button(
+    master=inputbuttonframe,
+    text="Auto-Select",
+    width=20,
+    height=1,
+    command=handle_auto
+)
+inputbuttonframe.grid(row=0, column=0, padx=5, pady=5)
 btn_fnin.grid(row=0, column=0, padx=5, pady=5)
+btn_auto.grid(row=0, column=1, padx=5, pady=5)
 btn_run.grid(row=0,column=1,padx=5,pady=5)
 btn_fnout.grid(row=0, column=2, padx=5, pady=5)
 canvas_in.grid(row=1, column=0, padx=5, pady=5)

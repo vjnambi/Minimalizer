@@ -77,7 +77,7 @@ def fillSplotches(fname, coords, canvas_size):
     while len(CRQ) != 0:
         target = CRQ.pop()
         if visited[target.x,target.y] == 0:
-            if target.priority > 0.2:
+            if target.priority > 0.15:
                 suggestion[target.x,target.y] = 255
             visited[target.x,target.y] = 1
             img2[target.x,target.y,:] = target.requested_color
