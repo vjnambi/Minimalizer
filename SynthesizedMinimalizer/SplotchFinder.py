@@ -4,6 +4,12 @@ import cv2
 import numpy
 import scipy.signal
 
+class ChangeRequest:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
 
 def findSplotches(fname, canvas_size):
     fname = fname.replace('/', '\\')
@@ -75,19 +81,19 @@ def findSplotches(fname, canvas_size):
                     max = Dist_Map[a,b,2]
                     max0 = a
                     max1 = b
-        changeQueue.put([max0,max1])
+        changeQueue.put(ChangeRequest(max0, max1))
         output += "\n" + (str(int(max1*599/(j-1))) + ', ' + str(int(max0*599/(i-1))) + ', 0')
         while not changeQueue.empty():
             target = changeQueue.get()
-            dim0 = target[0]
-            dim1 = target[1]
+            dim0 = target.x
+            dim1 = target.y
             visited[dim0, dim1] = 1
             for x in range(-1,2):
                 for y in range(-1,2):
-                    if 0 <= dim0+x < i and 0 <= dim1+y < j and visited[dim0+x,dim1+y] == 0 and (Dist_Map[dim0,dim1,2] >= Dist_Map[dim0+x,dim1+y,2] or Dist_Map[dim0+x,dim1+y,2] > 10):
+                    if 0 <= dim0+x < i and 0 <= dim1+y < j and visited[dim0+x,dim1+y] == 0 and (Dist_Map[dim0+x,dim1+y,2] > 10 or Dist_Map[dim0,dim1,2] >= Dist_Map[dim0+x,dim1+y,2]):
                         #print(Dist_Map[dim0 + x, dim1 + y, 2])
                         visited[dim0+x,dim1+y] = 1
-                        changeQueue.put([dim0+x,dim1+y])
+                        changeQueue.put(ChangeRequest(dim0+x,dim1+y))
     return output
     # for a in range(i):
     #     for b in range(j):
