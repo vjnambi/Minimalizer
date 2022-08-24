@@ -18,16 +18,23 @@ def findSplotches(fname, canvas_size):
     img = cv2.Canny(img,100,200)
 
     i,j = img.shape
-    Dist_Map = numpy.zeros((i,j,3))
+    Dist_Map = numpy.zeros((i,j,4))
     Dist_Map[:,:,0] = 2*i
     Dist_Map[:,:,1] = 2*j
     temp = math.sqrt(math.pow(2*i,2)+math.pow(2*j,2))
     Dist_Map[:,:,2] = temp
+    Dist_Map[:,:,3] = 0
 
     for a in range(i):
         for b in range(j):
+
+
             if img[a,b] > 1:
-                Dist_Map[a,b,:] = [0,0,0]
+                for x in range(-1, 2):
+                    for y in range(-1, 2):
+                        if 0 <= a + x < i and 0 <= b + y < j:
+                            Dist_Map[a+x,b+y,3] += 1
+                Dist_Map[a,b,0:3] = [0,0,0]
 
     for a in range(i):
         for b in range(1,j):
@@ -35,7 +42,7 @@ def findSplotches(fname, canvas_size):
             temp1 = Dist_Map[a,b-1,1] + 1
             temp2 = math.sqrt(math.pow(temp0,2) + math.pow(temp1,2))
             if temp2 < Dist_Map[a,b,2]:
-                Dist_Map[a,b,:] = [temp0,temp1,temp2]
+                Dist_Map[a,b,0:3] = [temp0,temp1,temp2]
 
     for b in range(j):
         for a in range(1,i):
@@ -43,7 +50,7 @@ def findSplotches(fname, canvas_size):
             temp1 = Dist_Map[a-1,b,1]
             temp2 = math.sqrt(math.pow(temp0,2) + math.pow(temp1,2))
             if temp2 < Dist_Map[a,b,2]:
-                Dist_Map[a,b,:] = [temp0,temp1,temp2]
+                Dist_Map[a,b,0:3] = [temp0,temp1,temp2]
 
     for a in range(i):
         for b in range(j-2,-1,-1):
@@ -51,7 +58,7 @@ def findSplotches(fname, canvas_size):
             temp1 = Dist_Map[a,b+1,1] - 1
             temp2 = math.sqrt(math.pow(temp0,2) + math.pow(temp1,2))
             if temp2 < Dist_Map[a,b,2]:
-                Dist_Map[a,b,:] = [temp0,temp1,temp2]
+                Dist_Map[a,b,0:3] = [temp0,temp1,temp2]
 
     for b in range(j):
         for a in range(i-2,-1,-1):
@@ -59,7 +66,8 @@ def findSplotches(fname, canvas_size):
             temp1 = Dist_Map[a+1,b,1]
             temp2 = math.sqrt(math.pow(temp0,2) + math.pow(temp1,2))
             if temp2 < Dist_Map[a,b,2]:
-                Dist_Map[a,b,:] = [temp0,temp1,temp2]
+                Dist_Map[a,b,0:3] = [temp0,temp1,temp2]
+
 
     visited = numpy.zeros((i,j))
 
@@ -90,7 +98,7 @@ def findSplotches(fname, canvas_size):
             visited[dim0, dim1] = 1
             for x in range(-1,2):
                 for y in range(-1,2):
-                    if 0 <= dim0+x < i and 0 <= dim1+y < j and visited[dim0+x,dim1+y] == 0 and (Dist_Map[dim0+x,dim1+y,2] > 10 or Dist_Map[dim0,dim1,2] >= Dist_Map[dim0+x,dim1+y,2]):
+                    if 0 <= dim0+x < i and 0 <= dim1+y < j and visited[dim0+x,dim1+y] == 0 and (Dist_Map[dim0+x,dim1+y,2] > 10 or (Dist_Map[dim0,dim1,2] > 1 and Dist_Map[dim0,dim1,2] >= Dist_Map[dim0+x,dim1+y,2]) or (Dist_Map[dim0+x,dim1+y,2] == 1 and Dist_Map[dim0,dim1,3] <= Dist_Map[dim0+x,dim1+y,3] and Dist_Map[dim0+x,dim1,2] != 0 and Dist_Map[dim0,dim1+y,2] != 0)):
                         #print(Dist_Map[dim0 + x, dim1 + y, 2])
                         visited[dim0+x,dim1+y] = 1
                         changeQueue.put(ChangeRequest(dim0+x,dim1+y))
