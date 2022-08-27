@@ -98,7 +98,7 @@ def findSplotches(fname, canvas_size):
             visited[dim0, dim1] = 1
             for x in range(-1,2):
                 for y in range(-1,2):
-                    if 0 <= dim0+x < i and 0 <= dim1+y < j and visited[dim0+x,dim1+y] == 0 and (Dist_Map[dim0+x,dim1+y,2] > 10 or (Dist_Map[dim0,dim1,2] > 1 and Dist_Map[dim0,dim1,2] >= Dist_Map[dim0+x,dim1+y,2]) or (Dist_Map[dim0+x,dim1+y,2] == 1 and Dist_Map[dim0,dim1,3] <= Dist_Map[dim0+x,dim1+y,3] and Dist_Map[dim0+x,dim1,2] != 0 and Dist_Map[dim0,dim1+y,2] != 0)):
+                    if 0 <= dim0+x < i and 0 <= dim1+y < j and visited[dim0+x,dim1+y] == 0 and (Dist_Map[dim0+x,dim1+y,2] > 3 or (Dist_Map[dim0,dim1,2] > 1 and Dist_Map[dim0,dim1,2] >= Dist_Map[dim0+x,dim1+y,2]) or (Dist_Map[dim0+x,dim1+y,2] == 1 and Dist_Map[dim0,dim1,3] <= Dist_Map[dim0+x,dim1+y,3] and Dist_Map[dim0+x,dim1,2] != 0 and Dist_Map[dim0,dim1+y,2] != 0)):
                         #print(Dist_Map[dim0 + x, dim1 + y, 2])
                         visited[dim0+x,dim1+y] = 1
                         changeQueue.put(ChangeRequest(dim0+x,dim1+y))
