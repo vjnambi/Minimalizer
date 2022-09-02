@@ -54,8 +54,8 @@ def fillSplotches(fname, coords, canvas_size):
     fname = fname.replace('/','\\')
     fname = fname.replace('\n','')
     img = cv2.imread(fname, cv2.IMREAD_COLOR)
-    for k in range(3):
-        img[:,:,k] = scipy.ndimage.gaussian_filter(img[:,:,k],0.1)
+    #for k in range(3):
+    #    img[:,:,k] = scipy.ndimage.gaussian_filter(img[:,:,k],0.1)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
     img2 = numpy.copy(img)
 
@@ -73,6 +73,8 @@ def fillSplotches(fname, coords, canvas_size):
     for i in range(colors.shape[0]):
         if colors[i,2] == 0:
             color_buffer = img[colors[i,0],colors[i,1],:]
+        elif colors[i,2] == 2:
+            color_buffer = numpy.zeros((1,1,3))
         CRQ.push(ChangeRequest(colors[i,0], colors[i,1], img[colors[i,0],colors[i,1],:], color_buffer, 0))
     while len(CRQ) != 0:
         target = CRQ.pop()
