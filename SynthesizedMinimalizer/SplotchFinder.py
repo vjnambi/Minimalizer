@@ -113,13 +113,9 @@ def findSplotches(fname, canvas_size):
         addQueueTarget = AddQueue.pop()
         max0 = addQueueTarget.x
         max1 = addQueueTarget.y
-        if addQueueTarget.priority == -1 and Dist_Map[max0, max1, 3] >= 2:
-            pointType = 0
-        else:
-            pointType = 0
         if visited[max0, max1] == 0:
             changeQueue.put(ChangeRequest(max0, max1))
-            output += "\n" + (str(int(max1*599/(j-1))) + ', ' + str(int(max0*599/(i-1))) + ', '+str(pointType))
+            output += "\n" + (str(int(max1*599/(j-1))) + ', ' + str(int(max0*599/(i-1))) + ', 0')
             while not changeQueue.empty():
                 target = changeQueue.get()
                 dim0 = target.x

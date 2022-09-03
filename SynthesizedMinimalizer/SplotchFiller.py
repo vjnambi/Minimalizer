@@ -73,8 +73,6 @@ def fillSplotches(fname, coords, canvas_size):
     for i in range(colors.shape[0]):
         if colors[i,2] == 0:
             color_buffer = img[colors[i,0],colors[i,1],:]
-        elif colors[i,2] == 2:
-            color_buffer = numpy.zeros((1,1,3))
         CRQ.push(ChangeRequest(colors[i,0], colors[i,1], img[colors[i,0],colors[i,1],:], color_buffer, 0))
     while len(CRQ) != 0:
         target = CRQ.pop()
