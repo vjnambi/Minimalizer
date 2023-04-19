@@ -5,7 +5,7 @@ The GUI should open
 
 Select an input image
 
-Left click on the input image in the GUI to select splotches
+Left click on the input image in the GUI to select splotches   OR   Click the auto-select button
 
 The text field should be populated with your image's filename and the splotch coordinates you selected
 
