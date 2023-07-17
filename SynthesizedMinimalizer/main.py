@@ -60,8 +60,9 @@ def handle_run():
     try:
         window.title('Minimalizer (Loading...)')
         fillSplotches(fname, coords, canvas_size)
-    except:
+    except Exception as error:
         window.title('Minimalizer (Invalid Input)')
+        print(error)
     else:
         window.title('Minimalizer')
 

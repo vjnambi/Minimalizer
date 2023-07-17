@@ -49,6 +49,59 @@ def HLSDist(val1, val2):
     val2z = (val2[1] - 128) / 128
     return math.dist([val1x, val1y, val1z], [val2x, val2y, val2z])
 
+def trisect(x,y,img):
+    print("cp1")
+    orig = img[x,y,:]
+    trivisited = numpy.zeros((img.shape[0],img.shape[1]))
+    points = numpy.zeros((3,2),dtype=int)
+    numpoints = 0
+    TRQ = ChangeRequestQueue(())
+    TRQ.push(ChangeRequest(x,y,None,None,0))
+    proprange = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+    print("cp2")
+    while numpoints < 3:
+        target = TRQ.pop()
+        if trivisited[target.x, target.y] == 0:
+            trivisited[target.x, target.y] = 1
+            condition = False
+            for i,j in proprange:
+                if 0 <= target.x + i < trivisited.shape[0] and 0 <= target.y + j < trivisited.shape[1] and trivisited[target.x + i, target.y + j] == 0:
+                    if numpy.all(img[target.x + i, target.y + j, :] == orig):
+                        TRQ.push(ChangeRequest(target.x + i, target.y + j, None, None, math.sqrt(pow((target.x + i - x),2)+pow((target.y + j - y),2))))
+                    else:
+                        if numpy.all(img[target.x, target.y, :] == orig):
+                            condition = True
+                        TRQ.push(ChangeRequest(target.x + i, target.y + j, None, None, 0))
+            if condition:
+                points[numpoints, 0] = target.x
+                points[numpoints, 1] = target.y
+                numpoints += 1
+    print("cp30")
+    white = numpy.zeros((1,1,3))
+    white[0,0,1] = 255
+    white[0,0,2] = 255
+    print("cp31")
+    neq = numpy.zeros((img.shape[0],img.shape[1],3))
+    for stuff in range(3):
+        print(points[stuff,0])
+        print(points[stuff,1])
+        img[points[stuff,0],points[stuff,1],:] = white
+        cossim = -1*(points[stuff-1,1]-points[stuff,1])*(points[stuff-2,0]-points[stuff,0]) + (points[stuff-1,0]-points[stuff,0])*(points[stuff-2,1]-points[stuff,1])
+        for i in range(img.shape[0]):
+            for j in range(img.shape[1]):
+                tempcossim = -1*(points[stuff-1,1]-points[stuff,1])*(i-points[stuff,0]) + (points[stuff-1,0]-points[stuff,0])*(j-points[stuff,1])
+                if cossim * tempcossim >= 0:
+                    neq[i,j,stuff] = 1
+    neqsum = numpy.sum(neq,axis=2) == 3
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            if neqsum[i,j]:
+                img[i,j,:] = white
+    print("cp4")
+    return img
+
+
+
 
 def fillSplotches(fname, coords, canvas_size):
     fname = fname.replace('/','\\')
@@ -69,11 +122,14 @@ def fillSplotches(fname, coords, canvas_size):
     colors[:,2] = coords[:,2]
 
     CRQ = ChangeRequestQueue(())
+    triarray = []
 
     for i in range(colors.shape[0]):
-        if colors[i,2] == 0:
+        if colors[i,2] == 0 or colors[i,2] == 2:
             color_buffer = img[colors[i,0],colors[i,1],:]
         CRQ.push(ChangeRequest(colors[i,0], colors[i,1], img[colors[i,0],colors[i,1],:], color_buffer, 0))
+        if colors[i,2] == 2:
+            triarray.append(colors[i,:])
     while len(CRQ) != 0:
         target = CRQ.pop()
         if visited[target.x,target.y] == 0:
@@ -85,6 +141,9 @@ def fillSplotches(fname, coords, canvas_size):
             for i, j in proprange:
                 if 0 <= target.x + i < visited.shape[0] and 0 <= target.y + j < visited.shape[1] and visited[target.x + i, target.y + j] == 0:
                     CRQ.push(ChangeRequest(target.x + i, target.y + j, target.original_color, target.requested_color, HLSDist(target.original_color, img[target.x + i, target.y + j])))
+    for i in triarray:
+        print("cp0")
+        img2 = trisect(i[0], i[1], img2)
     img = img2
     img = cv2.cvtColor(img, cv2.COLOR_HLS2BGR)
     cv2.imwrite("ArtImage.png",img)
